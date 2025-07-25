@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mock Hue Bridge Dashboard</title>
+    <style>
+        body { font-family: sans-serif; background: #f7f7f7; }
+        h1 { color: #333; }
+        .group {
+            background: #f0f4fa;
+            border-radius: 10px;
+            margin: 2em 0 2em 0;
+            padding: 1em 2em 1.5em 2em;
+            box-shadow: 0 2px 8px #0001;
+        }
+        .group-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 0.5em;
+            color: #2a3a4a;
+        }
+        .lights {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5em;
+        }
+        .light {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px #0001;
+            padding: 1em;
+            min-width: 200px;
+            max-width: 220px;
+            display: flex;
+            align-items: center;
+            gap: 1em;
+        }
+        .light .color {
+            width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ccc;
+        }
+        .on { color: #1cae1c; font-weight: bold; }
+        .off { color: #aaa; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Mock Hue Bridge Dashboard</h1>
+    <div id="groups"></div>
+    <script>
+    function hueToRgb(h, s, v) {
+        h = h / 65535;
+        s = s / 254;
+        v = v / 254;
+        let r, g, b;
+        let i = Math.floor(h * 6);
+        let f = h * 6 - i;
+        let p = v * (1 - s);
+        let q = v * (1 - f * s);
+        let t = v * (1 - (1 - f) * s);
+        switch(i % 6){
+            case 0: r = v, g = t, b = p; break;
+            case 1: r = q, g = v, b = p; break;
+            case 2: r = p, g = v, b = t; break;
+            case 3: r = p, g = q, b = v; break;
+            case 4: r = t, g = p, b = v; break;
+            case 5: r = v, g = p, b = q; break;
+        }
+        return `rgb(${Math.round(r*255)},${Math.round(g*255)},${Math.round(b*255)})`;
+    }
+    function updateGroups() {
+        fetch('/api/mock/groups_lights')
+            .then(r => r.json())
+            .then(data => {
+                const groups = data.groups;
+                const lights = data.lights;
+                let html = '';
+                for (const [gid, group] of Object.entries(groups)) {
+                    html += `<div class="group">
+                        <div class="group-title">${group.name}</div>
+                        <div class="lights">`;
+                    for (const lid of group.lights) {
+                        const light = lights[lid];
+                        if (!light) continue;
+                        const st = light.state;
+                        const color = hueToRgb(st.hue, st.sat, st.bri);
+                        html += `<div class="light">
+                            <div class="color" style="background:${color}"></div>
+                            <div>
+                                <b>${light.name}</b><br>
+                                <span class="${st.on ? 'on' : 'off'}">${st.on ? 'ON' : 'OFF'}</span><br>
+                                <span>Hue: ${st.hue}, Bri: ${st.bri}, Sat: ${st.sat}</span>
+                            </div>
+                        </div>`;
+                    }
+                    html += `</div></div>`;
+                }
+                document.getElementById('groups').innerHTML = html;
+            });
+    }
+    setInterval(updateGroups, 2000);
+    updateGroups();
+    </script>
+</body>
+</html> 
