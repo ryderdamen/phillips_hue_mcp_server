@@ -16,8 +16,7 @@ services:
     environment:
       HUE_BRIDGE_IP: mock-hue:5000
       HUE_USERNAME: testuser
-      GOOGLE_CLIENT_ID: ${HUE_MCP_GOOGLE_CLIENT_ID}
-      GOOGLE_CLIENT_SECRET: ${HUE_MCP_GOOGLE_CLIENT_SECRET}
+      API_TOKEN: "huetesting0525"
       ALLOWED_EMAILS: ryderdamen@gmail.com
       TAILSCALE_FUNNEL_URL: ${HUE_MCP_TAILSCALE_FUNNEL_URL}
     ports:

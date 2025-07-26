@@ -1,20 +1,52 @@
 # Phillips Hue MCP Server
-A MCP server that lets you control a local phillips hue bridge, so you can control your lights more intuitively with ChatGPT or another public LLM.
+A deployable MCP server, that allows for control of Phillips Hue lights on your LAN.
 
-## URL
-The public URL for the MCP server is as follows.
-```txt
-https://ryders-macbook-pro.tail2b9210.ts.net/mcp/
+**Note:** This is a proof of concept, and is not yet tested with an actual Hue system - only a mocked system.
+
+## Local Development
+To run the mock server and the MCP server, use the following command:
+```sh
+make run
 ```
 
-## Architecture
-A running server on your network, on a raspberry pi, with direct LAN access to the phillips hue bridge (mocked for this example). Exposed over the public web with tailscale funnel, and secured with OAuth using the newly developed standards for MCP, and Google as an identity provider.
+Debugging can be done with MCP inspector
+```sh
+npx @modelcontextprotocol/inspector
+```
 
+And the full implementation can be tested with Claude Desktop, by updating the developer MCP config file.
+```json
+{
+    "mcpServers": {
+      "phillips-hue": {
+        "command": "npx",
+        "args": [
+          "mcp-remote",
+          "http://localhost:8000/mcp/",
+          "--allow-http"
+        ]
+      }
+    }
+  }
+   
+```
 
-## work in progress, because im at 4% battery, and there's a power outage. Not yet ready.
+## Examples of things you can say
 
-### to do
-- test oauth logic
-- test full implementation with chatgpt or another public LLM
-- implement script for tailscale funnel setup, etc.
-- implement more hue endpoionts to make sure i can capture every behaviour i want (turn on only the floor lamps in the kitchen, and set them to red, and make the ceiling ones green.)
+> Turn off all the lights in the living room.
+
+> Which lights are on in the bedroom?
+
+> Set all the floor lamps to red
+
+---
+
+## Future
+- Authentication
+    - OAuth based authentication/proxy, for limiting access to specific people
+- Remote Access
+    - Tailscale Funnel deployment, so you can control your lights away from home
+- Managed MCP-Hue-Bridge Authentication
+    - Currently the API / Authentication is mocked; I'd like to implement it properly
+- Enhanced Features
+    - Better scene management

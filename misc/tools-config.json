@@ -1,0 +1,13 @@
+{
+    "mcpServers": {
+      "phillips-hue": {
+        "command": "npx",
+        "args": [
+          "mcp-remote",
+          "http://localhost:8000/mcp/",
+          "--allow-http"
+        ]
+      }
+    }
+  }
+   
