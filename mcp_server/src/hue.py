@@ -23,9 +23,17 @@ def get_groups() -> Dict:
 def set_light_state(light_id: str, state: dict) -> dict:
     resp = requests.put(f"{BASE_URL}/lights/{light_id}/state", json=state)
     resp.raise_for_status()
-    return resp.json()
+    response_data = resp.json()
+    # Convert list response to dict for FastMCP compatibility
+    if isinstance(response_data, list) and len(response_data) > 0:
+        return response_data[0]
+    return response_data
 
 def set_group_action(group_id: str, action: dict) -> dict:
     resp = requests.put(f"{BASE_URL}/groups/{group_id}/action", json=action)
     resp.raise_for_status()
-    return resp.json() 
+    response_data = resp.json()
+    # Convert list response to dict for FastMCP compatibility
+    if isinstance(response_data, list) and len(response_data) > 0:
+        return response_data[0]
+    return response_data 

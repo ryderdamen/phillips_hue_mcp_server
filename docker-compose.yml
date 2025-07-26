@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   mock-hue:
     build:
@@ -6,6 +5,10 @@ services:
     container_name: mock-hue
     ports:
       - "5000:5000"
+    volumes:
+      - ./mock_bridge/src:/app/src
+    working_dir: /app/src
+    command: python mock_hue.py
   mcp-server:
     build:
       context: ./mcp_server
@@ -14,9 +17,13 @@ services:
       HUE_BRIDGE_IP: mock-hue:5000
       HUE_USERNAME: testuser
       GOOGLE_CLIENT_ID: ${HUE_MCP_GOOGLE_CLIENT_ID}
-      ALLOWED_EMAILS: ${HUE_MCP_ALLOWED_EMAILS}
+      GOOGLE_CLIENT_SECRET: ${HUE_MCP_GOOGLE_CLIENT_SECRET}
+      ALLOWED_EMAILS: ryderdamen@gmail.com
       TAILSCALE_FUNNEL_URL: ${HUE_MCP_TAILSCALE_FUNNEL_URL}
     ports:
       - "8000:8000"
+    volumes:
+      - ./mcp_server/src:/app/src
+    working_dir: /app/src
     depends_on:
       - mock-hue

@@ -1,6 +1,12 @@
 # Phillips Hue MCP Server
 A MCP server that lets you control a local phillips hue bridge, so you can control your lights more intuitively with ChatGPT or another public LLM.
 
+## URL
+The public URL for the MCP server is as follows.
+```txt
+https://ryders-macbook-pro.tail2b9210.ts.net/mcp/
+```
+
 ## Architecture
 A running server on your network, on a raspberry pi, with direct LAN access to the phillips hue bridge (mocked for this example). Exposed over the public web with tailscale funnel, and secured with OAuth using the newly developed standards for MCP, and Google as an identity provider.
 

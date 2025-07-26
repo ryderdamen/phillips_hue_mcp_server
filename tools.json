@@ -1,0 +1,10 @@
+{
+    "mcpServers": {
+        "phillips-hue": {
+        "command": "http",
+        "args": {
+            "url": "https://ryders-macbook-pro.tail2b9210.ts.net/mcp"
+        }
+        }
+    }
+}
